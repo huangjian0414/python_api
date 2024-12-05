@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import mysql_utils
 
 app = Flask(__name__)
 
@@ -62,6 +63,18 @@ def upload():
         return f"File {filename} uploaded successfully!"
     return "No file uploaded", 400
 
+
+@app.route('/api/getAllUsers', methods=['GET'])
+def getAllUsers():
+    users = mysql_utils.get_users()
+    result = []
+    for user in users:
+        result.append({
+            "username": user[1],
+            "password": user[2],
+            "status": user[3]
+        })
+    return jsonify({"users": result})
 
 if __name__ == '__main__':
     app.run(port=5000)
